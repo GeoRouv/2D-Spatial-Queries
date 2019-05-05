@@ -56,22 +56,21 @@ Below, you see the queries visualized in full correspondence with the list above
  
 ### shapes.c
 
-	-Κάθε φορά που δέχεται μια σειρά από εντολές το πρόγραμμα, τις φυλάει σε ένα 2D array.
-	-Κάθε εντολή(string) αυτού του array την κάνω tokenize(δηλαδή τη χωρίζω σε tokens) και τα αποθηκεύω σε έναν 3D array όπου σε κάθε κελί βρίσκεται ένα από αυτά.
-	-Όσες είναι οι εντολές που λαμβάνω, τόσους handlers φτιάχνω.
-	-Εάν ο αριθμός των δοθέντων συντεταγμένων μπορεί να χωριστεί εξίσου στον αριθμό των workers όλα καλά, ειδάλλως κάθε worker παίρνει ένα extra ζευγάρι συντεταγμένων εκτός από τον τελευταίο που παίρνει 		λιγότερα.
-	-Πριν να εκτελέσει ο worker το utility που του αντιστοιχεί φτιάχνει το fifo file του και αν είναι ο parent το ανοίγει για διάβασμα και περιμένει την εκτέλεση του utility.Αν είναι child τότε εκτελεί 		το utility.
-	-Όταν τελειώσουν όλοι οι workers τότε ο handler μαζεύει τις πληροφορίες από όλα τα fifos και τις γράφει σε ένα .οut.(Θα μπορούσε να γίνει πιο αποδοτικά ξεκινώντας τη συλλογή πληροφοριών από το fifo 		του worker που τελείωσε πρώτος με τη βοήθεια του pid του).
-	-To gnuplot script δημιουγεί κανονικά την .png εικόνα στο directory που βρίσκεται και τα fifos δημιουργούνται στο TempDir που έχει δοθεί ώς αρχική παράμετρος.
-	-Με εκτέλεση της εντολής exit στο CLI Mode του shapes τερματίζει το πρόγραμμα.
-	-Με εκτέλεση της εντολής make clean στο κανονικό command line καθαρίζονται τα εκτελέσιμα όπως και ο TempDir που έχει δημιουργηθεί από προηγούμενη εκτέλεση.	
+- When accepting a series of commands, the program keeps them in a 2D array.
+- I tokenize every command(string) of this array (splitting it into tokens) and store it in a 3D array where every token is located in each cell.
+- I create as many handlers as the commands that are received.
+- If the number of given coordinates can be equally divided into the number of workers then it shall be done. Otherwise, each worker gets an extra pair of coordinates except for the last who gets less.
+- Before the execution of the corresponding utility by the worker makes his fifo file and if he is the parent opens it for reading and waits for the utility to run. If he is a child then he runs the utility.
+- When all the workers are finished then the handler collects the information from all fifos and writes them in a .out file (It could be done more efficiently by starting the collection of information from the worker's fifo who finished first with the help of his pid) .
+- The gnuplot script creates the .png image in the directory that is located and the fifos are created in TempDir that has been given as an initial parameter.
+- The program terminates with the execution of the exit command.
+- With the execution of make clean command on the normal command line, executables are cleaned (like TempDir created from a previous run).	
 
+Note: The program for number w <= 2 does not work properly, sticking after the last worker is executed. For any other number the program works correctly and for any data.
 
--Σημείωση: Το πρόγραμμα για αριθμό w <= 2 δε λειτουργεί ορθά, κολλώντας μετά την εκτέλεση του τελευταίου worker.Για οποιοδήποτε άλλο όμως αριθμό το πρόγραμμα λειτουργεί σωστά και για οποιαδήποτε δεδομένα.
-
--Output PNG's: o φάκελος αυτός έχει αποτελέσματα για τις ακόλουθες εκτελέσεις:
+Output PNG's: o This file has results for the following executions:
 	
-	6_image.png: ring 2 3 80 60 red;  							(gridsize 4000)
-	7_image.png: circle 2 3 50 blue;  							(gridsize 4000)
-	0_image.png: ellipse 2 3 1000 2000 green;					(gridsize 8000)
-	2_image.png: semicircle 500 500 1000 N purple; 				(gridsize 8000)
+	6_image.png: ring 2 3 80 60 red;  				(gridsize 4000)
+	7_image.png: circle 2 3 50 blue;  				(gridsize 4000)
+	0_image.png: ellipse 2 3 1000 2000 green;			(gridsize 8000)
+	2_image.png: semicircle 500 500 1000 N purple; 			(gridsize 8000)

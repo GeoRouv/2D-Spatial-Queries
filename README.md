@@ -77,3 +77,53 @@ This file has results for the following executions:
 	7_image.png: circle 2 3 50 blue;  				(gridsize 4000)
 	0_image.png: ellipse 2 3 1000 2000 green;			(gridsize 8000)
 	2_image.png: semicircle 500 500 1000 N purple; 			(gridsize 8000)
+	
+
+
+## Hierarchy of Processes:
+
+The hierarchy you has three levels and consists of the shapes Master (M), the shapes Handlers (H), and finally the Workers (W). Figure 6 shows an example of the hierarchy that the shapes program should create. The number of workers w each handler creates remains constant throughout the execution of the shapes and is set by a command line parameter. In the example of Figure 6, each H that oversees a type of query has created and 'guided' z-child processes (w = z) to simultaneously look at the data file data. The H0 handler uses the underlying workers so that the last all at the same time find the points belonging to a circle area. Similarly, H1 coordinates z workers to find squares and H2 employs workers to find points in a ring. The communication between the handlers and the workers regarding the results is done with named pipes. Each handler gathers the individual results each worker creates, and stores them in a temporary file that is ultimately made available to the master to create a graphical overall result.
+
+## The Role of Processes at Each Level:
+
+At this point we describe the specific role each process plays in the hierarchy as well as the relevant interfaces.
+
+### shapes Master (M)
+Your original program is this level and here the executable call is made with the following arguments: prompt> ./shapes -i InputBinaryFile -w WorkersCount -d TempDir where: - shapes is the executable - InputBinaryFile is the binary file with the input data serialized in fl oat, fl oat, ... (without a space or a comma), - WorkersCount is the number of w working nodes that will be used to create the process hierarchy. must be created by each shape Handler (H) node, - TempDir is a list that will use your program To temporarily store intermediate files (if it does not exist, it should be created).
+
+The -i / -w / -d flags can be used in any order in the execution bar.
+
+When the master is executed, it should first determine the number of file data. The master, in addition to the number of points, will need to calculate for each worker the position (o ff set) from which to start reading the file. Workers will have different O ff sets for the input file, but it is very likely that the latter logically has a smaller number of points to process (PointsToReadCount).
+
+The M process supports a Command Line Interface (CLI) through which the user can enter specific utilities (one or more) to be executed and their associated arguments. The latter are available from the value (s) of the -a parameter. When a user is found in the CLI, he can either exit () and finish executing the shapes or accept commands in the following format:
+-> shape1 arg1 arg2 ... argN;
+with shape1 being the program of use of our choice, arg1 arg2 ... argN are the required parameters, and the question mark? to indicate the end of the order.
+
+The program should also support multi-utility group execution by separating the different comma-based commands by following the format:
+-> shape1 arg11 arg12 ... arg1N, shape2 arg21 arg22 ... arg2M, .....;
+
+For example, to perform a group query of a 'red' circle, an 'orange' square and a 'green' ring, we will insert the following:
+- → circle 3.0 2.2 5.0 red, square 3.0 3.8 2.5 orange, ring 5.0 5.0 4.0 4.5 green;
+With the above command, the master will create three handlers each of which is responsible for executing each of these three utilities with the help of w workers.
+
+Each time the CLI reads an input line, it can recognize the number of different commands to be executed, their usage program and their individual arguments. Then, you'll need to create the handlers that need the following parameters:
+- the number of workers to be created
+- which utility program to execute
+- the individual parameters of the program of use (but not the color information). Specifically, these parameters are: InputBinaryFile, OutputFile, UtilityArgs, Offset, and PointsToReadCount.
+
+### shapes Handler (H)
+
+After preparing the parameters, the handler will create w workers. The latter, in turn, will execute their utility. For each of the workers, the handler will create a named pipe (FIFO), whose name will be passed as an output file parameter to the utility. The file (named named pipe) will be created in the temporary TempDir directory given to the shapes command line. Also, the FIFO name will follow the PIDparent contract wCount.fifo. For example, with w = 2, the handler with PID = 5000 will create two FIFOs with names: 5000 w0.fifo, 5000 w1.fifo. Next, it will pass the name of each named pipe (ie the OutputFile) to the corresponding worker running the utility as a file-output parameter.
+
+The handler will wait for the workers to finish composing a temporary temporary file (located in the temporary directory) in an efficient way (that is, without having the handler wait for all his workers to quit before the result file is synthesized) . The name of the interim result file will follow the conventional SHPID.out format, where SHPID is the handler's PID. For example, the handler with PID = 5000 will create a 5000.out output file.
+
+### Presentation of Final Result by the shapes Master (M) 
+
+After waiting for all handlers to finish, the master can access the result of their execution through their temporary files. The master knows the PIDs of the handlers, and hence the names of all the intermediate result files he has to compose.
+
+The master will create a gnuplot script file in the temporary directory. The file name will follow the CommandCount script.gnuplot where CommandCount is the serial number of each command received by the CLI. Gnuplot will visualize the results of the queries by inputting the script. The appendix provides basic information on the use of gnuplot in this case.
+
+Once the visualization of the results with the gnuplot is complete, the master will be able to accept new commands again or finish. At the end of execution of the shapes, the contents of the temporary directory will be deleted.
+
+
+

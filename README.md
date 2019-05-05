@@ -66,9 +66,12 @@ Below, you see the queries visualized in full correspondence with the list above
 - The program terminates with the execution of the exit command.
 - With the execution of make clean command on the normal command line, executables are cleaned (like TempDir created from a previous run).	
 
-Note: The program for number w <= 2 does not work properly, sticking after the last worker is executed. For any other number the program works correctly and for any data.
+###Note 
 
-Output PNG's: o This file has results for the following executions:
+The program for w <= 2 does not work properly, freezing after the last worker is executed. For any other number and for any data the program works correctly.
+
+###Output PNG's
+This file has results for the following executions:
 	
 	6_image.png: ring 2 3 80 60 red;  				(gridsize 4000)
 	7_image.png: circle 2 3 50 blue;  				(gridsize 4000)

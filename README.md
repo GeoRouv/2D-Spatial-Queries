@@ -78,7 +78,7 @@ This file has results for the following executions:
 	
 
 
-## Hierarchy of Processes:
+## Hierarchy of Processes
 
 The hierarchy you has three levels and consists of the shapes Master (M), the shapes Handlers (H), and finally the Workers (W). Figure 6 shows an example of the hierarchy that the shapes program should create. The number of workers w each handler creates remains constant throughout the execution of the shapes and is set by a command line parameter. In the example of Figure 6, each H that oversees a type of query has created and 'guided' z-child processes (w = z) to simultaneously look at the data file data. 
 
@@ -86,7 +86,7 @@ The hierarchy you has three levels and consists of the shapes Master (M), the sh
 
 The H0 handler uses the underlying workers so that the last all at the same time find the points belonging to a circle area. Similarly, H1 coordinates z workers to find squares and H2 employs workers to find points in a ring. The communication between the handlers and the workers regarding the results is done with named pipes. Each handler gathers the individual results each worker creates, and stores them in a temporary file that is ultimately made available to the master to create a graphical overall result.
 
-## The Role of Processes at Each Level:
+## The Role of Processes at Each Level
 
 At this point we describe the specific role each process plays in the hierarchy as well as the relevant interfaces.
 

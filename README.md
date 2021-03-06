@@ -1,4 +1,4 @@
-# 2D-Spatial-Queries
+# 2D-spatial-queries
 Five simple utilities that implement spatial queries in two-dimensional space.
 The goal of this exercise is to familiarize with the creation of process hierarchies using the fork() system call that in combination with the exec*() call can help differentiate and share work. In addition, arious system calls such as wait, mk fi fo, fread, fwrite, I / Os, simple synchronization, and communication between processes are being used.
 
